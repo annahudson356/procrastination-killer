@@ -1,31 +1,29 @@
 # Procrastination Killer
 
-Have you ever opened Canvas only to be suprised when you see an assignment that you've missed or one that is unexpectedly due soon, unable to complete it in time? Well, we have too! We are here to make sure that you get your assignments done on time by making sure you 
-do not miss due dates.
+Have you ever opened Canvas only to be surprised by an assignment that you’ve missed or one that’s suddenly due soon, leaving you scrambling to complete it in time? This extension helps make sure you get your assignments done on time by ensuring you don’t miss due dates.
 
-
+---
 
 ## About
 
-This extension is super simple! It accomplishes the following four tasks
+This extension is super simple! It does the following:
 
-✔️ 1. Find the Canvas due dates on the page
-✔️ 2. Convert them to real computer dates
-✔️ 3. Adjust the dates to your “fake earlier date”
-✔️ 4. Replace the visible text with your fake date
-✔️ 5. Keep doing this as Canvas loads more content
+1. Finds the Canvas due dates on the page.
+2. Converts them to real computer-readable dates.
+3. Adjusts the dates to your “fake earlier date.”
+4. Optionally truncates due dates to the night before (11:59 PM), which is perfect if you tend to work at night and want to avoid missing assignments that are due midday.
+5. Replaces the visible text with your adjusted date.
+6. Continues updating as Canvas loads more content dynamically.
 
-Nothing else — no hacking, no modifying Canvas data, nothing dangerous. This is just a cosmetic change that 
-tricks your brain into doing your assignment easier!
+Nothing else — no hacking, no modifying Canvas data, nothing dangerous. This is purely a cosmetic change designed to trick your brain into tackling assignments earlier.
+
+---
+
+## Contributing
+
+We welcome contributions! Please make sure to open a PR with your new, vetted changes.
 
 
-
-## Well, what if I remember that the assignment is due later? 
-
-Well, we can only help with so much. The goal of this is to hack your brain to get the assignment done earlier. Our goal is that, especially with midday assignments as someone who works at night, it will be easier to do assignments without stress.
-
-
-
-# Credits
+## Credits
 
 Anna Hudson

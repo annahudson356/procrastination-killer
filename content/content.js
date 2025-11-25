@@ -1,3 +1,4 @@
+// content.js
 (() => {
   const DEFAULT_OFFSET_DAYS = 1;
   const MARK_CLASS = 'pk-changed';
@@ -16,57 +17,75 @@
   // Listen for storage changes
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area === 'sync') {
-      // Re-run on relevant change
       if (changes.enabled || changes.offsetDays || changes.force1159) {
         init();
       }
     }
   });
 
-  // Your date parsing, formatting, and transforming functions
+  // Parse a date string from Canvas-style text
   function parseCanvasDateString(s) {
     if (!s || typeof s !== 'string') return null;
-    s = s.trim().replace(/^\s*Due[:\s-]*/i, '');
+    s = s.trim();
+
+    // Try ISO parse first
     let iso = Date.parse(s);
     if (!isNaN(iso)) return new Date(iso);
 
-    let re = /([A-Za-z]{3,9}\s+\d{1,2}(?:,\s*\d{4})?)\s*(?:at\s*)?(\d{1,2}:\d{2}\s*(?:am|pm|AM|PM)?)?/;
+    // Month name + day (+ optional year) + optional time
+    let re = /([A-Za-z]{3,9})\s+(\d{1,2})(?:,\s*(\d{4}))?\s*(?:@?\s*(\d{1,2}:\d{2})\s*(am|pm)?)?/i;
     let m = s.match(re);
     if (m) {
-      let candidate = Date.parse(`${m[1]} ${m[2] || ''}`);
+      const month = m[1];
+      const day = m[2];
+      const year = m[3] || new Date().getFullYear();
+      const time = m[4] || '00:00';
+      const ampm = m[5] || '';
+      let candidate = Date.parse(`${month} ${day}, ${year} ${time} ${ampm}`);
       if (!isNaN(candidate)) return new Date(candidate);
     }
 
-    re = /(\d{1,2}\/\d{1,2}(?:\/\d{2,4})?)(?:\s+(\d{1,2}:\d{2}\s*(?:am|pm|AM|PM)?))?/;
+    // Fallback: MM/DD(/YYYY)? + optional time
+    re = /(\d{1,2}\/\d{1,2}(?:\/\d{2,4})?)\s*(\d{1,2}:\d{2}\s*(?:am|pm)?)?/i;
     m = s.match(re);
     if (m) {
       let candidate = Date.parse(`${m[1]} ${m[2] || ''}`);
       if (!isNaN(candidate)) return new Date(candidate);
     }
+
     return null;
   }
 
+  // Format date for display
   function formatForDisplay(date) {
-    let optsDate = { month: 'short', day: '2-digit' };
-    let datePart = new Intl.DateTimeFormat(undefined, optsDate).format(date);
-    let timePart = date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-    return `Due ${datePart} at ${timePart}`;
+    if (!date) return '';
+    const optsDate = { month: 'short', day: '2-digit' };
+    const datePart = new Intl.DateTimeFormat(undefined, optsDate).format(date);
+    const timePart = date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    return `${datePart} @ ${timePart}`;
   }
 
+  // Compute transformed date based on offset and optional truncate
   function computeTransformedDate(origDate, prefs) {
     if (!origDate) return null;
     let d = new Date(origDate.getTime());
+
+    // Apply offset first
+    const offset = typeof prefs.offsetDays === 'number' ? prefs.offsetDays : DEFAULT_OFFSET_DAYS;
+    d.setDate(d.getDate() - offset);
+
+    // Then, if truncate is enabled and time is not already 11:59 PM
     if (prefs.force1159) {
       if (!(d.getHours() === 23 && d.getMinutes() === 59)) {
-        d.setDate(d.getDate() - 1);
+        d.setDate(d.getDate() - 1); // move one more day back
         d.setHours(23, 59, 0, 0);
       }
-    } else {
-      d.setDate(d.getDate() - (typeof prefs.offsetDays === 'number' ? prefs.offsetDays : DEFAULT_OFFSET_DAYS));
     }
+
     return d;
   }
 
+  // Replace element text
   function replaceDisplayText(el, originalText, newText) {
     if (!el || !originalText || !newText) return;
     if (!el.dataset.pkOriginal) el.dataset.pkOriginal = originalText;
@@ -74,22 +93,13 @@
     el.textContent = newText;
   }
 
+  // Find potential date elements in the DOM
   function findDateElements(root = document) {
     const candidates = [];
-    const selectors = [
-      'span.due_date',
-      '.assignment-due',
-      '[data-purpose="assignment-due"]',
-      '.icon_due_date',
-      'div.assignment-details .date',
-      '.assignment-list .date'
-    ];
-    selectors.forEach(sel => {
-      root.querySelectorAll(sel)?.forEach(n => candidates.push(n));
-    });
+    const dateRegex = /\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2}\b/i;
 
-    root.querySelectorAll('span,div,li,td').forEach(node => {
-      if (node.textContent && /Due\s+/.test(node.textContent) && node.textContent.length < 200) {
+    root.querySelectorAll('li, span, div, td').forEach(node => {
+      if (node.textContent && dateRegex.test(node.textContent) && node.textContent.length < 200) {
         candidates.push(node);
       }
     });
@@ -125,7 +135,7 @@
             findDateElements(node).forEach(el => tryTransformElement(el, p));
           } else if (node.nodeType === 3) {
             const parent = node.parentElement;
-            if (parent && /Due\s+/.test(parent.textContent)) tryTransformElement(parent, p);
+            if (parent) tryTransformElement(parent, p);
           }
         });
       });

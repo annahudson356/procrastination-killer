@@ -8,13 +8,13 @@
   ],
   "host_permissions": [
     "https://*.instructure.com/*",
-    "https://*.canvas.*/*"
+    "https://*.canvas.com/*"
   ],
   "content_scripts": [
     {
       "matches": [
         "https://*.instructure.com/*",
-        "https://*.canvas.*/*"
+        "https://*.canvas.com/*"
       ],
       "js": ["content/content.js"],
       "css": ["content/content.css"],

@@ -2,7 +2,6 @@
 
 Have you ever opened Canvas only to be surprised by an assignment that you’ve missed or one that’s suddenly due soon, leaving you scrambling to complete it in time? This extension helps make sure you get your assignments done on time by ensuring you don’t miss due dates.
 
-
 ## About
 
 This extension is super simple! It does the following:

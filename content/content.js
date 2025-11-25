@@ -59,10 +59,10 @@
   // Format date for display
   function formatForDisplay(date) {
     if (!date) return '';
-    const optsDate = { month: 'short', day: '2-digit' };
+    const optsDate = { month: 'short', day: 'numeric' };
     const datePart = new Intl.DateTimeFormat(undefined, optsDate).format(date);
     const timePart = date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-    return `${datePart} @ ${timePart}`;
+    return `${datePart} at ${timePart}`;
   }
 
   // Compute transformed date based on offset and optional truncate

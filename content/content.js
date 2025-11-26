@@ -1,4 +1,3 @@
-// content.js
 (() => {
   const DEFAULT_OFFSET_DAYS = 1;
   const MARK_CLASS = 'pk-changed';
@@ -23,15 +22,12 @@
     }
   });
 
-  // Parse a date string from Canvas-style text
 function parseCanvasDateString(s) {
   if (!s || typeof s !== 'string') return null;
   s = s.trim();
-
-  // Normalize common Canvas format: "Dec 2 at 11:59pm" → "Dec 2 11:59 PM"
   let normalized = s
-    .replace(/\bat\b/i, '')          // remove "at"
-    .replace(/\s+/g, ' ')            // collapse spaces
+    .replace(/\bat\b/i, '')  
+    .replace(/\s+/g, ' ')       
     .replace(/(\d{1,2}:\d{2})(am|pm)/i, (_, time, meridiem) => {
       return `${time} ${meridiem.toUpperCase()}`; // fix casing
     });
@@ -46,7 +42,7 @@ function parseCanvasDateString(s) {
   parsed = Date.parse(numeric);
   if (!isNaN(parsed)) return new Date(parsed);
 
-  return null; // couldn't parse
+  return null;
 }
 
 
@@ -64,10 +60,8 @@ function parseCanvasDateString(s) {
     if (!origDate) return null;
     let d = new Date(origDate.getTime());
 
-    // Apply offset first
     let offset = typeof prefs.offsetDays === 'number' ? prefs.offsetDays : DEFAULT_OFFSET_DAYS;
     if (offset < 0){
-        alert("Negative numbers are not permitted and could cause late assignments!");
         offset = 0;
     }
     d.setDate(d.getDate() - offset);

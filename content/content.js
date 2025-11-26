@@ -60,11 +60,7 @@ function parseCanvasDateString(s) {
     if (!origDate) return null;
     let d = new Date(origDate.getTime());
 
-    let offset = typeof prefs.offsetDays === 'number' ? prefs.offsetDays : DEFAULT_OFFSET_DAYS;
-    if (offset < 0){
-        offset = 0;
-        offsetInput.value = 0;
-    }
+    const offset = typeof prefs.offsetDays === 'number' ? prefs.offsetDays : DEFAULT_OFFSET_DAYS;
     d.setDate(d.getDate() - offset);
 
     // Then, if truncate is enabled and time is not already 11:59 PM

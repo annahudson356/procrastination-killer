@@ -24,37 +24,31 @@
   });
 
   // Parse a date string from Canvas-style text
-  function parseCanvasDateString(s) {
-    if (!s || typeof s !== 'string') return null;
-    s = s.trim();
+function parseCanvasDateString(s) {
+  if (!s || typeof s !== 'string') return null;
+  s = s.trim();
 
-    // Try ISO parse first
-    let iso = Date.parse(s);
-    if (!isNaN(iso)) return new Date(iso);
+  // Normalize common Canvas format: "Dec 2 at 11:59pm" → "Dec 2 11:59 PM"
+  let normalized = s
+    .replace(/\bat\b/i, '')          // remove "at"
+    .replace(/\s+/g, ' ')            // collapse spaces
+    .replace(/(\d{1,2}:\d{2})(am|pm)/i, (_, time, meridiem) => {
+      return `${time} ${meridiem.toUpperCase()}`; // fix casing
+    });
 
-    // Month name + day (+ optional year) + optional time
-    let re = /([A-Za-z]{3,9})\s+(\d{1,2})(?:,\s*(\d{4}))?\s*(?:@?\s*(\d{1,2}:\d{2})\s*(am|pm)?)?/i;
-    let m = s.match(re);
-    if (m) {
-      const month = m[1];
-      const day = m[2];
-      const year = m[3] || new Date().getFullYear();
-      const time = m[4] || '00:00';
-      const ampm = m[5] || '';
-      let candidate = Date.parse(`${month} ${day}, ${year} ${time} ${ampm}`);
-      if (!isNaN(candidate)) return new Date(candidate);
-    }
+  let parsed = Date.parse(normalized);
+  if (!isNaN(parsed)) return new Date(parsed);
 
-    // Fallback: MM/DD(/YYYY)? + optional time
-    re = /(\d{1,2}\/\d{1,2}(?:\/\d{2,4})?)\s*(\d{1,2}:\d{2}\s*(?:am|pm)?)?/i;
-    m = s.match(re);
-    if (m) {
-      let candidate = Date.parse(`${m[1]} ${m[2] || ''}`);
-      if (!isNaN(candidate)) return new Date(candidate);
-    }
+  // Fallback: try numeric format MM/DD(/YYYY) with optional time
+  let numeric = s.replace(/(\d{1,2}:\d{2})(am|pm)/i, (_, time, meridiem) => {
+    return `${time} ${meridiem.toUpperCase()}`;
+  });
+  parsed = Date.parse(numeric);
+  if (!isNaN(parsed)) return new Date(parsed);
 
-    return null;
-  }
+  return null; // couldn't parse
+}
+
 
   // Format date for display
   function formatForDisplay(date) {

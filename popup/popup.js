@@ -20,5 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
     chrome.storage.sync.set(newPrefs, () => {
       console.log('Settings saved:', newPrefs);
     });
+    chrome.tabs.reload();
   });
 });

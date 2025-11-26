@@ -2,7 +2,6 @@
   const DEFAULT_OFFSET_DAYS = 1;
   const MARK_CLASS = 'pk-changed';
 
-  // Load settings
   async function loadSettings() {
     return new Promise(resolve => {
       chrome.storage.sync.get({

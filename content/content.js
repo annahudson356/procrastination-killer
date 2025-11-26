@@ -66,6 +66,10 @@ function parseCanvasDateString(s) {
 
     // Apply offset first
     const offset = typeof prefs.offsetDays === 'number' ? prefs.offsetDays : DEFAULT_OFFSET_DAYS;
+    if (offset < 0){
+        alert("Negative numbers are not permitted and could cause late assignments!");
+        offset = 0;
+    }
     d.setDate(d.getDate() - offset);
 
     // Then, if truncate is enabled and time is not already 11:59 PM

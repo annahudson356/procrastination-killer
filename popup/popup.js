@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (isNaN(offsetVal) || offsetVal < 0) {
       offsetVal = 0;
       offsetInput.value = 0;
-      alert("Negative numbers are not permitted and could cause late assignments!");
+      alert("Negative numbers are not permitted and could cause late assignments Please try again!");
     }
     else{
         const newPrefs = {

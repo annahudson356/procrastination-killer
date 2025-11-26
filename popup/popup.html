@@ -3,12 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Procrastination Killer Settings</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 10px; width: 220px; }
-    label { display: block; margin-top: 8px; }
-    input[type="number"] { width: 50px; }
-    button { margin-top: 10px; width: 100%; padding: 5px; }
-  </style>
+  <link rel="stylesheet" href="popup.css">
 </head>
 <body>
   <h3>Procrastination Killer Settings</h3>
@@ -17,14 +12,16 @@
     Days in advance:
     <input type="number" id="offsetDays" min="0">
   </label>
-
+  <br>
   <label>
     <input type="checkbox" id="force1159">
-    Truncate all times to previous 11:59 PM
+    Truncate all times to 11:59 PM on the previous day.
   </label>
+  <br>
 
   <button id="saveBtn">Save & Apply</button>
 
   <script src="popup.js"></script>
+  <p>Thank you for all of your love and support, we hope this helps procrastinators everywhere ♡</p>
 </body>
 </html>

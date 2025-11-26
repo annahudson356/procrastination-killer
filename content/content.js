@@ -65,7 +65,7 @@ function parseCanvasDateString(s) {
     let d = new Date(origDate.getTime());
 
     // Apply offset first
-    const offset = typeof prefs.offsetDays === 'number' ? prefs.offsetDays : DEFAULT_OFFSET_DAYS;
+    let offset = typeof prefs.offsetDays === 'number' ? prefs.offsetDays : DEFAULT_OFFSET_DAYS;
     if (offset < 0){
         alert("Negative numbers are not permitted and could cause late assignments!");
         offset = 0;
